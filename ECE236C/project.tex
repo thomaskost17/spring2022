@@ -1,0 +1,212 @@
+\documentclass[12pt, letterpaper]{article}
+\usepackage[margin=0.85in]{geometry}
+\usepackage{amsmath,amssymb,enumitem,scrextend}
+\usepackage[hidelinks]{hyperref}
+\usepackage{xcolor, graphicx}
+\usepackage{subcaption}
+\setlength{\parindent}{0in}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+\usepackage{listings}
+\usepackage{xcolor}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+	backgroundcolor=\color{backcolour},   
+	commentstyle=\color{codegreen},
+	keywordstyle=\color{magenta},
+	numberstyle=\tiny\color{codegray},
+	stringstyle=\color{codepurple},
+	basicstyle=\ttfamily\footnotesize,
+	breakatwhitespace=false,         
+	breaklines=true,                 
+	captionpos=b,                    
+	keepspaces=true,                 
+	numbers=left,                    
+	numbersep=5pt,                  
+	showspaces=false,                
+	showstringspaces=false,
+	showtabs=false,                  
+	tabsize=2
+}
+
+\lstset{style=mystyle}
+
+\begin{document}
+		\title{\vspace{-1in} Sparse Sensing for Compression and Denoising} % or Image Reconstruction
+	\author{Thomas Kost}
+	\date{\today}
+	\maketitle
+	\tableofcontents
+	
+	\section{Introduction}
+	\section{Dataset}
+	For this project we will be using the cropped Extended Yale Face Database B\cite{GeBeKr01}. This contains 16128 images of 28 human subjects under 9 poses and 64 illumination conditions.Each image is 192x168 pixels. For the purpose of this project we will be making use of a subset of these images. We will be choosing 50 images of the same individual in different illumination conditions in a single pose. The images will be vectorized to form a database in $\mathbb{R}^{32256x50}$.
+	\section{Sparse Sensor Selection}
+	\[ y = C\Psi x\]
+	\[y_{i} = C_{i}\psi x\]
+	
+	\begin{align*}
+			&\min_{C} -\log \det \left(\sum_{i=1}^{r}\Psi ^{T}C_{i}^{T}C_{i}\Psi\right)
+	 +\lambda||C||_{1}\\
+		&st. \;\;\;	C\mathbf{1} =\mathbf{1} \\
+		& \;\;\;\;\;\;0 \leq C \leq 1
+	\end{align*}
+	\subsection{PDHG}
+	
+	\subsection{ADMM}
+	We will now derive the ADMM implementation for this problem.We will first begin by reformatting our problem to replace our inequality constraint with an indicator function:
+	\[ \min_{C} -\log \det \left(\sum_{i=1}^{r}\Psi ^{T}C_{i}^{T}C_{i}\Psi\right)
+	+\lambda||C||_{1} +\delta_{0\leq C_{i,j}\leq 1}(C) \;\; s.t. \;\; C\mathbf{1} = \mathbf{1} \]
+	
+	 We can now form the augmented Lagrangian for our optimization problem. This is as follows:
+	\begin{align*}
+	\mathcal{L} =&   -\log \det \left(\sum_{i=1}^{r}\Psi ^{T}C_{i}^{T}C_{i}\Psi\right)
+	+\lambda||C||_{1}+\delta_{0\leq C_{i,j}\leq 1}(C) + z^{T}(C\mathbf{1} -\mathbf{1}) +\frac{t}{2}||C\mathbf{1} -\mathbf{1}||_{2}^{2}  \\	
+	=& -\log \det \left(\sum_{i=1}^{r}\Psi ^{T}C_{i}^{T}C_{i}\Psi\right)
+	+\lambda||C||_{1}+\delta_{0\leq C_{i,j}\leq 1}(C) + z^{T}(C\mathbf{1} -\mathbf{1}) +\frac{t}{2}||C\mathbf{1} -\mathbf{1}||_{2}^{2}  
+	\end{align*}
+	\section{Sparse Sensor Placement}
+	\[y=C\Psi a\]
+	where $y$ observation, $C$ sparse measurement matrix, $\Psi$ is tailored basis, and $a$ is a low rank approximation. Note $\Theta = C\Psi$
+	
+	\begin{align*}
+			 \min_{C}& \;\; ||\Theta||_{F}^2 + ||C||_{1} \\
+			      s.t& \;\; \Theta > 0 \\
+	\end{align*}
+	
+	\subsection{Algorithm and Derivation}
+	\subsubsection{PDHG}
+		We derived the Primal-Dual Hybrid Gradient(PDHG) for the sparse sensor placement problem.
+	\subsubsection{FISTA}
+	We will first describe the derivation and implementation of FISTA(Fast Iterative Shrinkage-Thresholding Algorithm) for the sparse sensor placement problem. We will first augment our problem to fit the framework of the proximal gradient method. We will do this through incorporating our constraint into a indicator function:
+		\[	\min_{C} \;\; ||C\Psi||_{F}^{2} + ||C||_{1} +\delta_{C\Psi > 0}(C)\]
+	Here we will denote $g(X) = ||X\Psi||_{F}^{2}$ (to be consistent with the literature). Note that $g(X)$ is differentiable, smooth, and $dom(g)=\mathbb{R}^{n}$. We correspondingly denote $h(X) = ||X||_{1} +\delta_{X\Psi>0}(X)$. We will see that $h(X)$ has a simple proximal operator.
+	We find the following facts:
+	
+	\begin{align*}
+		\nabla_{X} g(X) =& 2X\Psi\Psi^{T}\\
+		prox_{th}(X) =& \argmin_{U} ||U||_{1} + \delta_{U\Psi>0}(U)+ \frac{t}{2}||U-X||_{F}^{2}\\
+		             =& P_{S_{+}^{n}}\left(\hat{X}+\gamma I\right)\Psi^{\dagger}\\
+            \hat{X}_{i,j}  =& sign(X_{i,j})max(|X_{i,j}|-t,0) \\
+	\end{align*}
+	Here $gamma \in \mathbb{R}$ is a small constant to enforce positive definiteness. As a result our update equation for a vanilla proximal gradient method is given by:
+	\[C_{k+1} = prox_{th(\cdot)}\left(C_{k}-t\nabla_{C}g(C)\right)\]
+	 
+	\subsubsection{ADMM}
+	We will now take a look at an ADMM (Alternating Directions Method of Multipliers) implementation for this problem. We will again modify our problem through incorporating our constraint into a indicator function. This will result in the following reformulation:
+	
+	\[	\min_{C} \;\; ||C\Psi||_{F}^{2} + ||C||_{1} +\delta_{C\Psi > 0}(C)\]
+
+	We will then add a splitting variables to ease our formulation of the problem.
+	\begin{align*}
+		\min_{C}& \;\; ||C\Psi||_{F}^{2} + ||C||_{1} +\delta_{A > 0}(\Theta)\\
+				& \;\; s.t. \;\; \Theta=C\Psi \\
+				& \;\;\;\;\;\;\;\;\; B = C\\
+	\end{align*}
+	
+	This results in the following augmented Lagrangian:
+	\begin{align*}
+		\mathcal{L} =& ||C\Psi||_{F}^{2} + ||B||_{1} +\delta_{\Theta > 0}(\Theta) + tr(Z^{T}(C\Psi-\Theta)) + \frac{t}{2}|| C\Psi - \Theta||_{F}^{2} + tr(Y^T(C-B)) +\frac{t}{2}||C-B||_{F}^{2}\\
+		=& ||C\Psi||_{F}^{2} + ||B||_{1} +\delta_{\Theta > 0}(\Theta) + \frac{t}{2}|| C\Psi - \Theta +\frac{Z}{t}||_{F}^{2} +\frac{t}{2}||C-B+\frac{Y}{t}||_{F}^{2}\\
+	\end{align*}
+	We will now minimize $C$ and $\Theta$ in an alternating fashion. We will minimize over $(\Theta,B)$ as a group. This will yield the following update algorithms:
+	\begin{align*}
+		C_{k+1} &= \argmin_{C} ||C\Psi||_{F}^{2}+ \frac{t}{2}|| C\Psi - \Theta_{k} +\frac{Z_{k}}{t}||_{F}^{2}+\frac{t}{2}||C-B_{k}+\frac{Y_{k}}{t}||_{F}^{2} \\
+		     C_{k+1}   &= \frac{1}{2+t}\left(t\Theta_{k}\Psi^{T}+tB_{k}-Z_{k}\Psi^{T}-Y_{k}\right)\left(\Psi\Psi^{T} +tI\right)^{-1}\\
+		(\Theta_{k+1},B_{k+1}) &= \argmin_{\Theta,B} ||B||_{1} +\delta_{\Theta > 0}(\Theta) + \frac{t}{2}|| C_{k+1}\Psi - \Theta +\frac{Z_{k}}{t}||_{F}^{2}+\frac{t}{2}||C_{k+1}-B+\frac{Y_{k}}{t}||_{F}^{2} \\
+	\end{align*}
+	We can note here that $\Theta$ and $B$ are separable. Thus, this yields the following separate update equations:
+	\begin{align*}
+		\Theta_{k+1} &= \argmin_{\Theta}\delta_{\Theta > 0}(\Theta) + \frac{t}{2}|| C_{k+1}\Psi - \Theta +\frac{Z_{k}}{t}||_{F}^{2}\\
+		             &= P_{S_{+}^{n}}(C_{k+1}\Psi +\frac{Z_{k}}{t})\\
+		     B_{k+1} &=\argmin_{B} ||B||_{1} +\frac{t}{2}||C_{k+1}-B+\frac{Y_{k}}{t}||_{F}^{2} \\
+		      		 &=prox_{t^{-1}||\cdot||_{1}}(C_{k+1}+\frac{Y_{k}}{t})
+	\end{align*}
+	Given these updates we can update our dual multipliers via the following update:
+	\begin{align*}
+		Z_{k+1} &= Z_{k} +t(C_{k+1}\Psi -\Theta_{k+1})\\
+		Y_{k+1} &= Y_{k} +t(C_{k+1}-B_{k+1})
+	\end{align*}
+
+	\subsection{Results}
+	CVX could not solve this problem as it ran out of memory within 2 iterations. As a result, general purpose solvers are incapable of solving this given problem.
+	
+	\section{RPCA}
+	\begin{align*}
+				\min_{L,S}& \;\;||L||_{*}+\lambda||S||_{1}\\ s.t& \;\; L+S  =X
+	\end{align*}
+	
+	\subsection{Algorithm and Derivation}
+	\subsubsection{PDHG}
+		We derived the Primal-Dual Hybrid Gradient(PDHG) method for the RPCA optimization problem. To do so we will write our problem as:
+		\[\min_{L} ||L||_{*} +\lambda||X-L||_{1}\]
+		We will denote $f(Y) = ||Y||_{*}$  and $g(Y) = \lambda||X-Y||_{1}$. Therefore the conjugates $f^{*}(X)$ and $g^{*}(Y)$ can be defined as below:
+		\begin{align*}
+			f^{*}(Y) =& \sup_{X\in dom(f)} tr(Y^{T}X)-||X||_{*}\\
+					 =& \delta_{||\cdot||_{2} \leq 1}(X)\\
+			g^{*}(Y) =& \sup_{Z\in dom(f)} tr(Y^{T}Z)-\lambda||X-Z||_{*}\\
+			 =& \lambda \left(tr(\frac{Y^{T}X}{\lambda})- \delta_{||\cdot||_{\infty} \leq 1}(\frac{Y}{\lambda})\right)
+		\end{align*}
+		Given this, we can now formulate our dual problem, and begin the derivation of the PDHG update steps. Our dual problem is given by:
+		\[\max_{Z} -g^{*}(Z) -f^{*}(-Z)\]
+		Correspondingly, our update steps are given by:
+		\begin{align*}
+			L_{k+1} =& prox_{tf}(L_{k}- tZ_{k})\\
+			Z_{k+1} =& prox_{\tau g^{*}}(Z_{k}+\tau(2L_{k+1}-L_{k}))
+		\end{align*}
+	where we define the following proximal gradient functions:
+	\begin{align*}
+		prox_{tf}(Y) =& \sum_{i}max(0,\sigma_{i}-t)u_{i}v_{i}^{T} \\
+		prox_{\tau g^{*}}(Y)_{i,j} =& Y_{i,j} - \frac{\tau}{\lambda}\left( prox_{\lambda^{2}\tau^{-1}g}(\frac{\lambda}{\tau}Y-X)_{i,j} +X_{i,j}\right)\\
+		=&
+		 Y_{i,j}-\frac{\tau}{\lambda}X_{i,j}-\frac{\tau}{\lambda}sign(\frac{\lambda}{\tau}Y_{i,j}-X_{i,j})max(|\frac{\lambda}{\tau}Y_{i,j}+X_{i,j}|-\frac{\lambda^{2}}{\tau},0)
+	\end{align*}
+		Where $\sigma_{i}$,$u_{i}$, and $v_{i}$ are the associated singular values, left singular vectors, and right singular vectors respectively.
+	\subsubsection{ADMM}
+		We derived the ADMM for the RPCA optimization problem. To do so we first derived the augmented Lagrangian for our problem:
+	
+	\begin{align*}
+		\mathcal{L} =& ||L||_{*} + \lambda||S||_{1} +	tr(Z^T(X-L-S))+ \frac{t}{2}||X-L-S||_{F}^{2} \\
+		=& ||L||_{*} + \lambda||S||_{1} +\frac{t}{2}||X-L-S +\frac{Z}{t}||_{F}^{2} 
+	\end{align*}
+	We can then minimize along L and S independently to form our alternating update algorithm:
+	\begin{align*}
+		L_{k+1} =& \argmin_{L} \;\; ||L||_{*} +\frac{t}{2}||X-L-S_{k} +\frac{Z_{k}}{t}||_{F}^{2} \\
+		=& prox_{t^{-1}||\cdot||_{*}}\left(X-S_{k}+\frac{Z_{k}}{t}\right)\\
+		S_{k+1} =& \argmin_{S} \;\; \lambda||S||_{1} +\frac{t}{2}||X-L_{k+1}-S +\frac{Z_{k}}{t}||_{F}^{2}  \\
+		=& prox_{\lambda t^{-1}||\cdot||_{1}}\left(X-L+\frac{Z_{k}}{t} \right)\\
+	\end{align*}
+	Here the proximal operator of the nuclear norm and the $L_{1}$ norm are defined below. Where $\sigma_{i}$,$u_{i}$, and $v_{i}$ are the associated singular values, left singular vectors, and right singular vectors respectively.
+	\begin{align*}
+		prox_{t||\cdot||_{*}}(X) =& \sum_{i}max(0,\sigma_{i}-t)u_{i}v_{i}^{T} \\
+		prox_{t||\cdot||_{1}}(X)_{i,j} =& sign(X_{i,j})max(|X_{i,j}|-t,0) \\
+	\end{align*}
+	Given these updates we can update our dual multipliers via the following update:
+	
+	\begin{align*}
+		Z_{k+1} =& Z_{k} + t\left(X-L_{k+1}-S_{k+1}\right)
+	\end{align*}
+	This concludes the derivation of our ADMM algorithm.
+	
+	\subsection{Results}
+	CVX was able to handle the RPCA image decomposition problem, however it took 3.5 hours for a single image. 	 	
+	
+	\nocite{*}
+	\bibliographystyle{plain}
+	\bibliography{references}
+	
+	\appendix
+	\section{MATLAB Code}
+	The lines below contain all the code written with respect to the Sparse Sensor placement problem:
+	
+	\lstinputlisting[language=Octave]{project/CS_images.m}
+	
+	The lines below contain all the code written with respect to the RPCA problem.
+	\lstinputlisting[language=Octave]{project/RPCA.m}
+
+\end{document}

@@ -1,0 +1,48 @@
+\documentclass[12pt, letterpaper]{article}
+\usepackage[margin=0.85in]{geometry}
+\usepackage{amsmath,amssymb,enumitem,scrextend}
+\usepackage[hidelinks]{hyperref}
+\usepackage{xcolor, graphicx}
+\usepackage{subcaption}
+\setlength{\parindent}{0in}
+\begin{document}
+	\title{\vspace{-1in} Sparse Sensing for Compression and Denoising} % or Image Reconstruction
+	\author{Thomas Kost}
+	\date{\today}
+	\maketitle
+	\section{Background}
+		Sparse Sensing(SS) is a modified version of compressed sensing in which the emphasis is on determining near optimal sensor placement to infer a signal and meet specific estimation criteria. Rather than randomly sampling, we sample our data carefully as to take advantage of the structure built in to the model itself. This aims to reduce the hardware and data associated with naive sampling and provide consistent results for non-sparse systems that Compressed Sensing (CS) does not guarantee. \\
+		
+		Through creating overfit "libraries" of data relevant to our problem, we can use $L_{1}$ regularization to find a sparse representation of the signal in terms of overfit basis. This will allow us to determine the best (in the MSE sense for example) points to sample our signal to allow for reconstruction. Through forcing our representation to be sparse, we have the added benefit of being more robust to noise and obstructions in our signal. A similar technique to the determination of sparse sensors for a signal is the use of Robust Principal Component Analysis (RPCA) to factor our signal into a low rank structured matrix and a matrix containing essentially noise. This can be used to find the dominant patterns and structure in a dataset with non-gaussian corruptions. 
+		
+	\section{Dataset}
+		We will be considering either image data (or both depending on time). The data will be obstructed through either noise or obvious corruption. Images will be chosen to have higher dimension so the aspect of large scale optimization can be explored.
+		
+	\section{Method}
+	
+	We will take two distinct viewpoints in describing our signals. The first will be the representation of our signal in terms of a tailored library. We will denote this library of $r$ examples as $\Psi_{r}$, and a space array of sensors $C$. Thus our noisy reading $y$ can be denoted in terms of a vector $x$ that better approximates our original signal:
+	
+	$$ y = C \Psi_{r} x $$
+	
+	We want to determine the optimal placement of sensors in $C$ such that we minimize the non-zero entries of $C$. This can be done through solving an optimization problem. As explained in Brunton and Kutz's text, we seek to find a $C$ that improves the condition number of $\Theta = C\Psi_{r}$--this can be done through minimizing the maximum singular value of $\Theta$ or equivalently, the maximum eigenvalue of $\Theta^{T}\Theta$ (a common SDP problem). However, we will also add a regularization term of the $L_{1}$ norm of $C$ to promote sparsity as well. This will give us the following program:
+	
+
+	$$ \min_{C} \;\; ||\Theta||_{2}^2 + ||C||_{1}$$
+	$$ s.t \;\; \Theta \geq 0$$
+	
+	We should note that if our goal is for $C \in {0,1}$ then the above problem is a relaxation. However, we may hope that rounding all nonzero values to 1 would perform similarly. The overall goal will be to find a sparse representation from which a compressed form of the image would be adequate to recreate the orignal image (given our tailored basis).
+	
+	In order to solve the above optimization problem we will use the proximal gradient method and FISTA to rapidly iterate and come to a solution. I will also investigate using ADMM to solve this problem aswell.
+	
+	
+	The second lens through which we will view our signal is as being comprised of a low rank matrix $L$ and a sparse matrix $S$. This technique is known as Robust Principal Component Analysis (RPCA). Doing so gives us the following optimization problem (using the nuclear norm as a proxy for rank and the one norm as a proxy for the zero norm):
+	
+	$$ \min_{L,S} ||L||_{nuc}+\lambda ||S||_{1}\;\;\; s.t \;\;\; L+S  =X$$
+	
+		
+	Our goal is for $L$ to essentially be a denoised version of our signal $X$, and for $S$ to contain our distortions. We will solve this method through the augmented Lagrange multipliers algorithm. ADMM will also be applied as well.
+	
+
+	\bibliographystyle{plain}
+	\bibliography{references}
+\end{document}

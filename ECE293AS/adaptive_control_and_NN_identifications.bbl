@@ -1,0 +1,37 @@
+\begin{thebibliography}{1}
+
+\bibitem{Brunton}
+Steven~L. Brunton and J.~Nathan Kutz.
+\newblock {\em Data-Driven Science and Engineering: Machine Learning, Dynamical
+  Systems, and Control}.
+\newblock Cambridge University Press, USA, 1st edition, 2019.
+
+\bibitem{Narendra2}
+K.~S. Narendra.
+\newblock Stable identijication schemes in system identification:advances and
+  cases studies.
+\newblock {\em New York: Academic Press}, 1976.
+
+\bibitem{Narendra}
+K.~S. Narendra and K.~Parthasarathy.
+\newblock Identification and control of dynamical systems using neural
+  networks.
+\newblock {\em IEEE Trans. Neural Networks}, 1(1):4--27, 1990.
+
+\bibitem{Koko}
+H.~K.~Khalil P.~V.~Kokotovic and J.~O’Reilly.
+\newblock Singular perturbation methods in control: Analysis and design.
+\newblock {\em New York: Academic Press}, 1986.
+
+\bibitem{Christ}
+George~A. Rovithakis and Manolis~A. Christodoulou.
+\newblock Adaptive control of unknown plants using dynamical neural networks.
+\newblock {\em IEEE Transac tions On Systems, Man, and Cybernetics},
+  24(3):400--412, 1994.
+
+\bibitem{Verhaegen2013}
+Michel Verhaegen.
+\newblock {\em Subspace Techniques in System Identification}, pages 1--13.
+\newblock Springer London, London, 2013.
+
+\end{thebibliography}

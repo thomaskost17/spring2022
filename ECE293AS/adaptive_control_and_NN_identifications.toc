@@ -1,0 +1,12 @@
+\contentsline {section}{\numberline {1}Abstract}{1}{section.1}%
+\contentsline {section}{\numberline {2}Introduction}{2}{section.2}%
+\contentsline {section}{\numberline {3}Stability Analysis of Dynamical Neural Networks for Adaptive Control}{2}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Parametric Uncertainty(Lyapanov Stability)}{3}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Single Perturbation Analysis Background}{4}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Model Uncertainty}{4}{subsection.3.3}%
+\contentsline {section}{\numberline {4}Connections to Course}{6}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Parametric Uncertainty in a Nonlinear System}{6}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Persistence of Excitation}{6}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Identification Via Projection}{6}{subsection.4.3}%
+\contentsline {section}{\numberline {5}Shortcomings}{7}{section.5}%
+\contentsline {section}{\numberline {6}Future Development}{7}{section.6}%

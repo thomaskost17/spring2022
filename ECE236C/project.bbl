@@ -1,0 +1,34 @@
+\begin{thebibliography}{1}
+
+\bibitem{FandTboyd}
+Stephen Boyd, Neal Parikh, Eric Chu, Borja Peleato, and Jonathan Eckstein.
+\newblock Distributed optimization and statistical learning via the alternating
+  direction method of multipliers.
+\newblock {\em Foundations and Trends® in Machine Learning}, 3(1):1--122,
+  2011.
+
+\bibitem{Brunton}
+Steven~L. Brunton and J.~Nathan Kutz.
+\newblock {\em Data-Driven Science and Engineering: Machine Learning, Dynamical
+  Systems, and Control}.
+\newblock Cambridge University Press, USA, 1st edition, 2019.
+
+\bibitem{GeBeKr01}
+A.S. Georghiades, P.N. Belhumeur, and D.J. Kriegman.
+\newblock From few to many: Illumination cone models for face recognition under
+  variable lighting and pose.
+\newblock {\em IEEE Trans. Pattern Anal. Mach. Intelligence}, 23(6):643--660,
+  2001.
+
+\bibitem{inbook}
+Charles Guyon, Thierry Bouwmans, and El-hadi ZAHZAH.
+\newblock {\em Robust Principal Component Analysis for Background Subtraction:
+  Systematic Evaluation and Comparative Analysis}.
+\newblock 03 2012.
+
+\bibitem{boyd}
+Siddharth Joshi and Stephen Boyd.
+\newblock Sensor selection via convex optimization.
+\newblock {\em IEEE Transactions on Signal Processing}, 57(2):451--462, 2009.
+
+\end{thebibliography}

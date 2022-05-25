@@ -1,0 +1,54 @@
+This is BibTeX, Version 0.99d
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: adaptive_control_and_NN_identifications.aux
+Reallocating 'name_of_file' (item size: 1) to 6 items.
+The style file: plain.bst
+Reallocating 'name_of_file' (item size: 1) to 4 items.
+Database file #1: bib.bib
+Name 1 in "P. V. Kokotovic, H. K. Khalil, and J. O’Reilly" has a comma at the end for entry Koko
+while executing---line 1049 of file plain.bst
+Name 1 in "P. V. Kokotovic, H. K. Khalil, and J. O’Reilly" has a comma at the end for entry Koko
+while executing---line 1090 of file plain.bst
+Warning--can't use both author and editor fields in Verhaegen2013
+You've used 6 entries,
+            2118 wiz_defined-function locations,
+            541 strings with 5021 characters,
+and the built_in function-call counts, 1711 in all, are:
+= -- 170
+> -- 66
+< -- 1
++ -- 26
+- -- 20
+* -- 106
+:= -- 297
+add.period$ -- 18
+call.type$ -- 6
+change.case$ -- 27
+chr.to.int$ -- 0
+cite$ -- 7
+duplicate$ -- 72
+empty$ -- 141
+format.name$ -- 20
+if$ -- 355
+int.to.chr$ -- 0
+int.to.str$ -- 6
+missing$ -- 8
+newline$ -- 33
+num.names$ -- 12
+pop$ -- 29
+preamble$ -- 1
+purify$ -- 22
+quote$ -- 0
+skip$ -- 50
+stack$ -- 0
+substring$ -- 90
+swap$ -- 12
+text.length$ -- 1
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 20
+warning$ -- 1
+while$ -- 19
+width$ -- 7
+write$ -- 68
+(There were 2 error messages)
